@@ -1,0 +1,1 @@
+{"level":"ERROR","ts":"2025-04-17T22:32:24.183+0700","msg":"error creating user","error":"ERROR: column \"role\" of relation \"users\" does not exist (SQLSTATE 42703)","method":"CreateUser"}
