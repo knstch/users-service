@@ -1,1 +1,13 @@
 {"level":"ERROR","ts":"2025-04-17T22:32:24.183+0700","msg":"error creating user","error":"ERROR: column \"role\" of relation \"users\" does not exist (SQLSTATE 42703)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-17T23:38:19.448+0700","msg":"error creating tokens","error":"ERROR: invalid byte sequence for encoding \"UTF8\": 0xe3 0xb0 0xc4 (SQLSTATE 22021)","method":"StoreTokens"}
+{"level":"ERROR","ts":"2025-04-17T23:50:28.908+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-17T23:54:22.674+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-17T23:55:14.614+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-18T00:15:51.989+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-18T00:25:59.681+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-18T02:53:13.321+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-18T02:53:24.787+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-18T02:53:25.673+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-18T14:54:07.147+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-18T15:18:00.529+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}
+{"level":"ERROR","ts":"2025-04-18T15:21:57.377+0700","msg":"error creating user","error":"ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)","method":"CreateUser"}

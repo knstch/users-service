@@ -12,13 +12,13 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/knstch/subtrack-libs/endpoints"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	"users-service/config"
-	"users-service/internal/transport"
 	"users-service/internal/transport/endpoints/public"
 	"users-service/internal/users"
 	"users-service/internal/users/repo"
@@ -83,15 +83,13 @@ func run() error {
 
 	svc := users.NewService(lg, dbRepo, redisClient, *cfg)
 
-	publicController := public.NewController(svc, lg)
-	endpoints := public.MakeEndpoints(publicController)
-
-	httpHandlers := transport.NewHTTPHandlers(endpoints)
+	publicController := public.NewController(svc, lg, cfg)
+	publicEndpoints := endpoints.InitHttpEndpoints(publicController.Endpoints())
 
 	srv := http.Server{
 		Addr: ":" + cfg.PublicHTTPAddr,
 		Handler: http.TimeoutHandler(
-			httpHandlers,
+			publicEndpoints,
 			time.Second*5,
 			"service temporary unavailable",
 		),
@@ -105,7 +103,7 @@ func run() error {
 		signal.Notify(sigint, os.Interrupt)
 		<-sigint
 
-		if err := srv.Shutdown(context.Background()); err != nil {
+		if err = srv.Shutdown(context.Background()); err != nil {
 			log.Print(err)
 		}
 		close(idleConnsClosed)
@@ -116,6 +114,6 @@ func run() error {
 	}
 
 	<-idleConnsClosed
-	
+
 	return nil
 }

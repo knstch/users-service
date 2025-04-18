@@ -9,9 +9,10 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	svcerrs "users-service/internal/errors"
 	"users-service/internal/users/repo"
 	"users-service/internal/users/validator"
+
+	"github.com/knstch/subtrack-libs/svcerrs"
 )
 
 type UserTokens struct {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/knstch/subtrack-libs/svcerrs"
 	"go.uber.org/zap"
 )
 
@@ -16,6 +17,9 @@ func (r *DBRepo) CreateUser(ctx context.Context, email string, password string, 
 
 	if err := r.db.WithContext(ctx).Create(user).Error; err != nil {
 		r.lg.Error("error creating user", zap.Error(err), zap.String("method", "CreateUser"))
+		if isUniqueViolation(err) {
+			return 0, fmt.Errorf("db.Create: %w", svcerrs.ErrConflict)
+		}
 		return 0, fmt.Errorf("db.Create: %w", err)
 	}
 

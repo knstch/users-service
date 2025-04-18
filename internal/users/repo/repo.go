@@ -2,7 +2,10 @@ package repo
 
 import (
 	"context"
+	"errors"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type Repository interface {
@@ -19,6 +22,7 @@ type User struct {
 	Role      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt time.Time
 }
 
 func (User) TableName() string {
@@ -32,6 +36,7 @@ type UsersData struct {
 	LastName  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt time.Time
 }
 
 func (UsersData) TableName() string {
@@ -44,8 +49,19 @@ type Tokens struct {
 	AccessToken  string
 	RefreshToken string
 	Used         bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	DeletedAt    time.Time
 }
 
 func (Tokens) TableName() string {
 	return "tokens"
+}
+
+func isUniqueViolation(err error) bool {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		return pgErr.Code == "23505"
+	}
+	return false
 }

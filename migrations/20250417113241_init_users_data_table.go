@@ -19,6 +19,7 @@ func upInitUsersDataTable(_ context.Context, tx *sql.Tx) error {
     last_name VARCHAR(255),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMP NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 )`)
 	if err != nil {

@@ -1,7 +1,8 @@
 package users
 
 import (
-	"crypto/sha256"
+	"crypto/sha3"
+	"encoding/hex"
 	"fmt"
 	"strconv"
 	"time"
@@ -31,7 +32,13 @@ func (svc *ServiceImpl) mintJWT(userID uint, role string) (string, string, error
 		return "", "", err
 	}
 
-	refreshToken := string(sha256.New().Sum([]byte(fmt.Sprintf("%s%d", signedAccessToken, time.Now().Unix()))))
+	rawRefreshToken := []byte(fmt.Sprintf("%s%d", signedAccessToken, time.Now().Unix()))
+	hash := sha3.New256()
+	_, err = hash.Write(rawRefreshToken)
+	if err != nil {
+		return "", "", err
+	}
+	refreshToken := hex.EncodeToString(hash.Sum(nil))
 
 	return signedAccessToken, refreshToken, nil
 }

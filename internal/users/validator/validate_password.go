@@ -6,8 +6,7 @@ import (
 	"unicode"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-
-	svcerrs "users-service/internal/errors"
+	"github.com/knstch/subtrack-libs/svcerrs"
 )
 
 func ValidatePassword(ctx context.Context, password string) error {
