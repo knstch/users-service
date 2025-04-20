@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Users_CreateUser_FullMethodName = "/users.private.Users/CreateUser"
+	Users_CreateUser_FullMethodName   = "/users.private.Users/CreateUser"
+	Users_ConfirmEmail_FullMethodName = "/users.private.Users/ConfirmEmail"
 )
 
 // UsersClient is the client API for Users service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UsersClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfigEmailResponse, error)
 }
 
 type usersClient struct {
@@ -47,11 +49,22 @@ func (c *usersClient) CreateUser(ctx context.Context, in *CreateUserRequest, opt
 	return out, nil
 }
 
+func (c *usersClient) ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfigEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ConfigEmailResponse)
+	err := c.cc.Invoke(ctx, Users_ConfirmEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServer is the server API for Users service.
 // All implementations must embed UnimplementedUsersServer
 // for forward compatibility.
 type UsersServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfigEmailResponse, error)
 	mustEmbedUnimplementedUsersServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedUsersServer struct{}
 
 func (UnimplementedUsersServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedUsersServer) ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfigEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConfirmEmail not implemented")
 }
 func (UnimplementedUsersServer) mustEmbedUnimplementedUsersServer() {}
 func (UnimplementedUsersServer) testEmbeddedByValue()               {}
@@ -104,6 +120,24 @@ func _Users_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_ConfirmEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConfirmEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).ConfirmEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_ConfirmEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).ConfirmEmail(ctx, req.(*ConfirmEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Users_ServiceDesc is the grpc.ServiceDesc for Users service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var Users_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUser",
 			Handler:    _Users_CreateUser_Handler,
+		},
+		{
+			MethodName: "ConfirmEmail",
+			Handler:    _Users_ConfirmEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

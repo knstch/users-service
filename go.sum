@@ -67,8 +67,8 @@ github.com/knstch/subtrack-kafka v0.0.2 h1:vgUhGRSCsqzxDRI8hX6uZX1ZFJ8tpky8ymTjK
 github.com/knstch/subtrack-kafka v0.0.2/go.mod h1:Y5FHMKOiRghElUKjMMq50Y8+JDyENyiPdAXyCS60/UA=
 github.com/knstch/subtrack-libs v0.0.6 h1:No+wA/U4R1PDUIZ6i+6Y7naxtphtUAVxuelbASSL6k0=
 github.com/knstch/subtrack-libs v0.0.6/go.mod h1:fGAcLuoCXTqxmY+ufEtryiEcM4zoC6kUD09awuhMqII=
-github.com/knstch/users-api v0.0.2 h1:UgU/sQTecttkQZUv5RlbJE8SI0uEx2IT5eDpISx9GgQ=
-github.com/knstch/users-api v0.0.2/go.mod h1:TpqiRgqNu+XQsU/9Q/zwwVtRoOkwaCOXDabJzwF1a5M=
+github.com/knstch/users-api v0.0.3 h1:qSTzrk5QC6SuGoB5aq45xzHw4PSKdQRqcd0y7INrja0=
+github.com/knstch/users-api v0.0.3/go.mod h1:TpqiRgqNu+XQsU/9Q/zwwVtRoOkwaCOXDabJzwF1a5M=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mfridman/interpolate v0.0.2 h1:pnuTK7MQIxxFz1Gr+rjSIx9u7qVjf5VOoM/u6BbAxPY=
