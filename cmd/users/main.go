@@ -19,7 +19,7 @@ import (
 	"gorm.io/gorm"
 
 	"users-service/config"
-	"users-service/internal/transport/endpoints/public"
+	"users-service/internal/endpoints/public"
 	"users-service/internal/users"
 	"users-service/internal/users/repo"
 

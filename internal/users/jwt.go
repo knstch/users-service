@@ -8,17 +8,12 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/knstch/subtrack-libs/auth"
 )
-
-type Claims struct {
-	UserID string `json:"uid"`
-	Role   string `json:"role"`
-	jwt.RegisteredClaims
-}
 
 func (svc *ServiceImpl) mintJWT(userID uint, role string) (string, string, error) {
 	timeNow := time.Now()
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, auth.Claims{
 		UserID: strconv.Itoa(int(userID)),
 		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{

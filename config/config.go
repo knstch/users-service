@@ -18,6 +18,8 @@ type Config struct {
 	PublicHTTPAddr  string `envconfig:"PUBLIC_HTTP_ADDR" required:"true"`
 	PrivateGRPCAddr string `envconfig:"PRIVATE_GRPC_ADDR" required:"true"`
 
+	KafkaAddr string `envconfig:"KAFKA_ADDR" required:"true"`
+
 	DBConfig    DBConfig
 	RedisConfig RedisConfig
 }

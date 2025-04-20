@@ -9,6 +9,8 @@ import (
 
 	"users-service/config"
 	"users-service/internal/users/repo"
+
+	"github.com/knstch/subtrack-kafka/producer"
 )
 
 type ServiceImpl struct {
@@ -19,7 +21,8 @@ type ServiceImpl struct {
 	passwordSecret string
 	jwtSecret      string
 
-	redis *redis.Client
+	redis    *redis.Client
+	producer *producer.Producer
 }
 
 type Users interface {
@@ -33,5 +36,6 @@ func NewService(lg *zap.Logger, repo repo.Repository, redis *redis.Client, cfg c
 		passwordSecret: cfg.PasswordSecret,
 		jwtSecret:      cfg.JwtSecret,
 		redis:          redis,
+		producer:       producer.NewProducer(cfg.KafkaAddr),
 	}
 }

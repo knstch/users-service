@@ -6,10 +6,12 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgconn"
+
+	"users-service/internal/domain/enum"
 )
 
 type Repository interface {
-	CreateUser(ctx context.Context, email string, password string, role string) (uint, error)
+	CreateUser(ctx context.Context, email string, password string, role enum.Role) (uint, error)
 	StoreTokens(ctx context.Context, userID uint, accessToken string, refreshToken string) error
 
 	Transaction(fn func(st Repository) error) error

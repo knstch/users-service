@@ -6,13 +6,15 @@ import (
 
 	"github.com/knstch/subtrack-libs/svcerrs"
 	"go.uber.org/zap"
+
+	"users-service/internal/domain/enum"
 )
 
-func (r *DBRepo) CreateUser(ctx context.Context, email string, password string, role string) (uint, error) {
+func (r *DBRepo) CreateUser(ctx context.Context, email string, password string, role enum.Role) (uint, error) {
 	user := &User{
 		Email:    email,
 		Password: password,
-		Role:     role,
+		Role:     role.String(),
 	}
 
 	if err := r.db.WithContext(ctx).Create(user).Error; err != nil {

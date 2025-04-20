@@ -5,10 +5,14 @@ import (
 	"fmt"
 	"math/rand"
 	"net/mail"
+	"strconv"
 	"time"
 
+	"github.com/knstch/subtrack-kafka/topics"
+	"github.com/knstch/users-api/event"
 	"golang.org/x/crypto/bcrypt"
 
+	"users-service/internal/domain/enum"
 	"users-service/internal/users/repo"
 	"users-service/internal/users/validator"
 
@@ -35,9 +39,13 @@ func (svc *ServiceImpl) CreateUser(ctx context.Context, email string, password s
 		return UserTokens{}, fmt.Errorf("bcrypt.GenerateFromPassword: %w", err)
 	}
 
-	userTokens := UserTokens{}
+	var (
+		userTokens UserTokens
+		userID     uint
+	)
+
 	if err = svc.repo.Transaction(func(st repo.Repository) error {
-		userID, err := st.CreateUser(ctx, email, string(passwordWithSalt), "unverified_user")
+		userID, err = st.CreateUser(ctx, email, string(passwordWithSalt), enum.UnverifiedUserRole)
 		if err != nil {
 			return fmt.Errorf("repo.CreateUser: %w", err)
 		}
@@ -51,14 +59,21 @@ func (svc *ServiceImpl) CreateUser(ctx context.Context, email string, password s
 			return fmt.Errorf("st.StoreTokens: %w", err)
 		}
 
-		confirmationCode := rand.Int()
-		if err = svc.redis.Set(fmt.Sprintf("confirmation-%d", userID), confirmationCode, time.Minute*30).Err(); err != nil {
-			return fmt.Errorf("redis.Set: %w", err)
-		}
-
 		return nil
 	}); err != nil {
 		return UserTokens{}, fmt.Errorf("repo.Transaction: %w", err)
+	}
+
+	confirmationCode := rand.Intn(9000) + 1000
+	if err = svc.redis.Set(fmt.Sprintf("confirmation-%d", userID), confirmationCode, time.Minute*30).Err(); err != nil {
+		return UserTokens{}, fmt.Errorf("redis.Set: %w", err)
+	}
+
+	if err = svc.producer.SendMessage(topics.TopicUserCreated, email, event.UserCreated{
+		Email: email,
+		Code:  strconv.Itoa(confirmationCode),
+	}); err != nil {
+		return UserTokens{}, fmt.Errorf("producer.SendMessage: %w", err)
 	}
 
 	return userTokens, nil
