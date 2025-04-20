@@ -19,6 +19,10 @@ import (
 	"github.com/knstch/subtrack-libs/svcerrs"
 )
 
+func confirmationKey(userID uint) string {
+	return fmt.Sprintf("confirmation-%d", userID)
+}
+
 type UserTokens struct {
 	AccessToken  string
 	RefreshToken string
@@ -50,7 +54,7 @@ func (svc *ServiceImpl) CreateUser(ctx context.Context, email string, password s
 			return fmt.Errorf("repo.CreateUser: %w", err)
 		}
 
-		userTokens.AccessToken, userTokens.RefreshToken, err = svc.mintJWT(userID, "unverified_user")
+		userTokens.AccessToken, userTokens.RefreshToken, err = svc.mintJWT(userID, enum.UnverifiedUserRole)
 		if err != nil {
 			return fmt.Errorf("svc.mintJWT: %w", err)
 		}
@@ -65,7 +69,7 @@ func (svc *ServiceImpl) CreateUser(ctx context.Context, email string, password s
 	}
 
 	confirmationCode := rand.Intn(9000) + 1000
-	if err = svc.redis.Set(fmt.Sprintf("confirmation-%d", userID), confirmationCode, time.Minute*30).Err(); err != nil {
+	if err = svc.redis.Set(confirmationKey(userID), confirmationCode, time.Minute*30).Err(); err != nil {
 		return UserTokens{}, fmt.Errorf("redis.Set: %w", err)
 	}
 

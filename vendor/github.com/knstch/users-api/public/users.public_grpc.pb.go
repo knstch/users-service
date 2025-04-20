@@ -28,7 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UsersClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
-	ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfigEmailResponse, error)
+	ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfirmEmailResponse, error)
 }
 
 type usersClient struct {
@@ -49,9 +49,9 @@ func (c *usersClient) CreateUser(ctx context.Context, in *CreateUserRequest, opt
 	return out, nil
 }
 
-func (c *usersClient) ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfigEmailResponse, error) {
+func (c *usersClient) ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfirmEmailResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ConfigEmailResponse)
+	out := new(ConfirmEmailResponse)
 	err := c.cc.Invoke(ctx, Users_ConfirmEmail_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (c *usersClient) ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest,
 // for forward compatibility.
 type UsersServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
-	ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfigEmailResponse, error)
+	ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfirmEmailResponse, error)
 	mustEmbedUnimplementedUsersServer()
 }
 
@@ -78,7 +78,7 @@ type UnimplementedUsersServer struct{}
 func (UnimplementedUsersServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUsersServer) ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfigEmailResponse, error) {
+func (UnimplementedUsersServer) ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfirmEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConfirmEmail not implemented")
 }
 func (UnimplementedUsersServer) mustEmbedUnimplementedUsersServer() {}

@@ -8,4 +8,5 @@ func (r Role) String() string {
 
 const (
 	UnverifiedUserRole Role = "unverified_user"
+	VerifiedUserRole   Role = "verified_user"
 )

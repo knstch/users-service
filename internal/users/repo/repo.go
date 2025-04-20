@@ -13,6 +13,8 @@ import (
 type Repository interface {
 	CreateUser(ctx context.Context, email string, password string, role enum.Role) (uint, error)
 	StoreTokens(ctx context.Context, userID uint, accessToken string, refreshToken string) error
+	ConfirmEmail(ctx context.Context, userID uint) error
+	DeactivateTokens(ctx context.Context, userID uint) error
 
 	Transaction(fn func(st Repository) error) error
 }
@@ -53,7 +55,7 @@ type Tokens struct {
 	Used         bool
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-	DeletedAt    time.Time
+	DeletedAt    *time.Time
 }
 
 func (Tokens) TableName() string {

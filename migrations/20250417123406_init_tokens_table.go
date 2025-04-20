@@ -20,7 +20,7 @@ func upInitTokensTable(_ context.Context, tx *sql.Tx) error {
     used BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    deleted_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 )`)
 	if err != nil {

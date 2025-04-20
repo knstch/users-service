@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
+	"github.com/knstch/subtrack-libs/middleware"
 	"go.uber.org/zap"
 
 	"users-service/config"
@@ -37,6 +38,8 @@ func NewController(svc users.Users, lg *zap.Logger, cfg *config.Config) *Control
 }
 
 func (c *Controller) Endpoints() []endpoints.Endpoint {
+	mdw := []middleware.Middleware{middleware.WithCookieAuth(c.cfg.JwtSecret)}
+
 	return []endpoints.Endpoint{
 		{
 			Method:  http.MethodPost,
@@ -46,6 +49,16 @@ func (c *Controller) Endpoints() []endpoints.Endpoint {
 			Encoder: httptransport.EncodeJSONResponse,
 			Req:     public.CreateUserRequest{},
 			Res:     public.CreateUserResponse{},
+		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/confirmEmail",
+			Handler: MakeConfirmEmailEndpoint(c),
+			Decoder: transport.DecodeJSONRequest[public.ConfirmEmailRequest],
+			Encoder: httptransport.EncodeJSONResponse,
+			Req:     public.ConfirmEmailRequest{},
+			Res:     public.ConfirmEmailResponse{},
+			Mdw:     mdw,
 		},
 	}
 }

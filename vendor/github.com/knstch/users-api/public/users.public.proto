@@ -4,7 +4,7 @@ option go_package = "./";
 
 service Users {
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
-  rpc ConfirmEmail(ConfirmEmailRequest) returns (ConfigEmailResponse);
+  rpc ConfirmEmail(ConfirmEmailRequest) returns (ConfirmEmailResponse);
 }
 
 message CreateUserRequest {
@@ -21,4 +21,7 @@ message ConfirmEmailRequest {
   string code = 1;
 }
 
-message ConfigEmailResponse {}
+message ConfirmEmailResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+}
