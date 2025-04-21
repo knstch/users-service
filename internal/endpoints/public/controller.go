@@ -60,5 +60,14 @@ func (c *Controller) Endpoints() []endpoints.Endpoint {
 			Res:     public.ConfirmEmailResponse{},
 			Mdw:     mdw,
 		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/refreshToken",
+			Handler: MakeRefreshTokenEndpoint(c),
+			Decoder: transport.DecodeJSONRequest[public.RefreshTokenRequest],
+			Encoder: httptransport.EncodeJSONResponse,
+			Req:     public.RefreshTokenRequest{},
+			Res:     public.RefreshTokenResponse{},
+		},
 	}
 }

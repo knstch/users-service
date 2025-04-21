@@ -28,6 +28,7 @@ type ServiceImpl struct {
 type Users interface {
 	CreateUser(ctx context.Context, email string, password string) (UserTokens, error)
 	ConfirmEmail(ctx context.Context, code string) (UserTokens, error)
+	RefreshToken(ctx context.Context, refreshToken string) (UserTokens, error)
 }
 
 func NewService(lg *zap.Logger, repo repo.Repository, redis *redis.Client, cfg config.Config) *ServiceImpl {

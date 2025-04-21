@@ -7,6 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgconn"
 
+	"users-service/internal/domain/dto"
 	"users-service/internal/domain/enum"
 )
 
@@ -15,6 +16,8 @@ type Repository interface {
 	StoreTokens(ctx context.Context, userID uint, accessToken string, refreshToken string) error
 	ConfirmEmail(ctx context.Context, userID uint) error
 	DeactivateTokens(ctx context.Context, userID uint) error
+	UseRefreshToken(ctx context.Context, token string) (uint, error)
+	GetUser(ctx context.Context, id uint) (dto.User, error)
 
 	Transaction(fn func(st Repository) error) error
 }
@@ -47,7 +50,7 @@ func (UsersData) TableName() string {
 	return "users_data"
 }
 
-type Tokens struct {
+type Token struct {
 	ID           uint
 	UserID       uint
 	AccessToken  string
@@ -58,7 +61,7 @@ type Tokens struct {
 	DeletedAt    *time.Time
 }
 
-func (Tokens) TableName() string {
+func (Token) TableName() string {
 	return "tokens"
 }
 

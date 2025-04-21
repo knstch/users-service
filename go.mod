@@ -12,7 +12,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/knstch/subtrack-kafka v0.0.2
 	github.com/knstch/subtrack-libs v0.0.7
-	github.com/knstch/users-api v0.0.5
+	github.com/knstch/users-api v0.0.6
 	github.com/pressly/goose/v3 v3.24.2
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.36.0

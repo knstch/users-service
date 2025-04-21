@@ -11,9 +11,14 @@ import (
 
 	"users-service/internal/domain/enum"
 	"users-service/internal/users/repo"
+	"users-service/internal/users/validator"
 )
 
 func (svc *ServiceImpl) ConfirmEmail(ctx context.Context, code string) (UserTokens, error) {
+	if err := validator.ValidateConfirmationCode(code); err != nil {
+		return UserTokens{}, fmt.Errorf("validator.ValidateConfirmationCode: %w", err)
+	}
+
 	userData, err := auth.GetUserData(ctx)
 	if err != nil {
 		return UserTokens{}, fmt.Errorf("auth.GetUserData: %w", err)

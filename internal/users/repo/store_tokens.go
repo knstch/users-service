@@ -8,7 +8,7 @@ import (
 )
 
 func (r *DBRepo) StoreTokens(ctx context.Context, userID uint, accessToken string, refreshToken string) error {
-	if err := r.db.WithContext(ctx).Create(&Tokens{
+	if err := r.db.WithContext(ctx).Create(&Token{
 		UserID:       userID,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
