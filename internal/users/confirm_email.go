@@ -24,7 +24,9 @@ func (svc *ServiceImpl) ConfirmEmail(ctx context.Context, code string) (UserToke
 		return UserTokens{}, fmt.Errorf("auth.GetUserData: %w", err)
 	}
 
-	codeFromDB, err := svc.redis.Get(confirmationKey(userData.UserID)).Result()
+	key := confirmationKey(userData.UserID)
+
+	codeFromDB, err := svc.redis.Get(key).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return UserTokens{}, fmt.Errorf("redis.Get: %w", svcerrs.ErrGone)
@@ -46,7 +48,7 @@ func (svc *ServiceImpl) ConfirmEmail(ctx context.Context, code string) (UserToke
 			return fmt.Errorf("st.DeactivateTokens: %w", err)
 		}
 
-		userTokens.AccessToken, userTokens.RefreshToken, err = svc.mintJWT(userData.UserID, enum.VerifiedUserRole)
+		userTokens, err = svc.mintJWT(userData.UserID, enum.VerifiedUserRole)
 		if err != nil {
 			return fmt.Errorf("svc.mintJWT: %w", err)
 		}
@@ -57,6 +59,10 @@ func (svc *ServiceImpl) ConfirmEmail(ctx context.Context, code string) (UserToke
 
 		return nil
 	})
+
+	if err = svc.redis.Del(key).Err(); err != nil {
+		return UserTokens{}, fmt.Errorf("redis.Del: %w", err)
+	}
 
 	return userTokens, nil
 }

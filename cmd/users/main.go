@@ -55,13 +55,13 @@ func run() error {
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	core := zapcore.NewTee(
 		zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(&lumberjack.Logger{
-			Filename:   `./log/users_logfile.log`,
+			Filename:   `./log/` + cfg.ServiceName + `_logfile.log`,
 			MaxSize:    100,
 			MaxBackups: 3,
 			MaxAge:     28,
 		}), zap.InfoLevel),
 		zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(&lumberjack.Logger{
-			Filename:   `./log/users_error.log`,
+			Filename:   `./log/` + cfg.ServiceName + `_error.log`,
 			MaxSize:    100,
 			MaxBackups: 3,
 			MaxAge:     28,

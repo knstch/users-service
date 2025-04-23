@@ -4,15 +4,15 @@ FROM base AS builder
 
 WORKDIR /build
 COPY . ./
-RUN go build ./cmd/cargo
+RUN go build ./cmd/users
 
 FROM base AS final
 
 ARG PORT
 
 WORKDIR /app
-COPY --from=builder /build/cargo /build/.env ./
-COPY --from=builder /build/cargo ./
+COPY --from=builder /build/users /build/.env ./
+COPY --from=builder /build/users ./
 
 EXPOSE ${PUBLIC_HTTP_ADDR}
 CMD ["/app/${SERVICE_NAME}"]

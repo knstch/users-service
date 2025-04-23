@@ -15,12 +15,14 @@ func (svc *ServiceImpl) RefreshToken(ctx context.Context, refreshToken string) (
 			return fmt.Errorf("st.UseRefreshToken: %w", err)
 		}
 
-		user, err := st.GetUser(ctx, userID)
+		user, err := st.GetUser(ctx, repo.UserFilter{
+			UserID: userID,
+		})
 		if err != nil {
 			return fmt.Errorf("st.GetUser: %w", err)
 		}
 
-		userTokens.AccessToken, userTokens.RefreshToken, err = svc.mintJWT(userID, user.Role)
+		userTokens, err = svc.mintJWT(userID, user.Role)
 		if err != nil {
 			return fmt.Errorf("svc.mintJWT: %w", err)
 		}

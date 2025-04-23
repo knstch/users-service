@@ -1,19 +1,17 @@
-FROM golang:1.23 AS base
+FROM golang:1.24 AS base
 
 FROM base AS builder
 
 WORKDIR /build
 COPY . ./
-RUN go build ./cmd/cargo
+RUN go build ./cmd/outbox
 
 FROM base AS final
 
 ARG PORT
 
 WORKDIR /app
-COPY --from=builder /build/cargo /build/.env ./
-COPY --from=builder /build/cargo ./
-COPY certs ./certs/
+COPY --from=builder /build/outbox /build/.env ./
+COPY --from=builder /build/outbox ./
 
-EXPOSE ${HTTP_PORT}
-CMD ["/app/cargo"]
+CMD ["/app/outbox"]

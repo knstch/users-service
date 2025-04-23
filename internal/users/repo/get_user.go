@@ -12,9 +12,9 @@ import (
 	"users-service/internal/domain/enum"
 )
 
-func (r *DBRepo) GetUser(ctx context.Context, id uint) (dto.User, error) {
+func (r *DBRepo) GetUser(ctx context.Context, filter UserFilter) (dto.User, error) {
 	var user User
-	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&user).Error; err != nil {
+	if err := r.db.WithContext(ctx).Scopes(filter.ToScope()).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return dto.User{}, fmt.Errorf("user not found: %w", svcerrs.ErrDataNotFound)
 		}

@@ -43,12 +43,10 @@ func (c *Controller) Endpoints() []endpoints.Endpoint {
 	return []endpoints.Endpoint{
 		{
 			Method:  http.MethodPost,
-			Path:    "/createUser",
-			Handler: MakeCreateUserEndpoint(c),
-			Decoder: transport.DecodeJSONRequest[public.CreateUserRequest],
+			Path:    "/register",
+			Handler: MakeRegisterEndpoint(c),
+			Decoder: transport.DecodeJSONRequest[public.RegisterRequest],
 			Encoder: httptransport.EncodeJSONResponse,
-			Req:     public.CreateUserRequest{},
-			Res:     public.CreateUserResponse{},
 		},
 		{
 			Method:  http.MethodPost,
@@ -56,8 +54,6 @@ func (c *Controller) Endpoints() []endpoints.Endpoint {
 			Handler: MakeConfirmEmailEndpoint(c),
 			Decoder: transport.DecodeJSONRequest[public.ConfirmEmailRequest],
 			Encoder: httptransport.EncodeJSONResponse,
-			Req:     public.ConfirmEmailRequest{},
-			Res:     public.ConfirmEmailResponse{},
 			Mdw:     mdw,
 		},
 		{
@@ -66,8 +62,35 @@ func (c *Controller) Endpoints() []endpoints.Endpoint {
 			Handler: MakeRefreshTokenEndpoint(c),
 			Decoder: transport.DecodeJSONRequest[public.RefreshTokenRequest],
 			Encoder: httptransport.EncodeJSONResponse,
-			Req:     public.RefreshTokenRequest{},
-			Res:     public.RefreshTokenResponse{},
+		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/login",
+			Handler: MakeLoginEndpoint(c),
+			Decoder: transport.DecodeJSONRequest[public.LoginRequest],
+			Encoder: httptransport.EncodeJSONResponse,
+		},
+		{
+			Method:  http.MethodGet,
+			Path:    "/getUserInfo",
+			Handler: MakeGetUserInfoEndpoint(c),
+			Decoder: transport.DecodeDefaultRequest,
+			Encoder: httptransport.EncodeJSONResponse,
+			Mdw:     mdw,
+		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/resetPassword",
+			Handler: MakeResetPasswordEndpoint(c),
+			Decoder: transport.DecodeJSONRequest[public.ResetPasswordRequest],
+			Encoder: httptransport.EncodeJSONResponse,
+		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/confirmResetPassword",
+			Handler: MakeConfirmResetPasswordEndpoint(c),
+			Decoder: transport.DecodeJSONRequest[public.ConfirmResetPasswordRequest],
+			Encoder: httptransport.EncodeJSONResponse,
 		},
 	}
 }
