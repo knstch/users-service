@@ -6,15 +6,19 @@ import (
 	"fmt"
 
 	"github.com/knstch/subtrack-libs/svcerrs"
+	"github.com/knstch/subtrack-libs/tracing"
 	"gorm.io/gorm"
 
 	"users-service/internal/domain/dto"
 	"users-service/internal/domain/enum"
 )
 
-func (r *DBRepo) GetUser(ctx context.Context, id uint) (dto.User, error) {
+func (r *DBRepo) GetUser(ctx context.Context, filter UserFilter) (dto.User, error) {
+	ctx, span := tracing.StartSpan(ctx, "repo: GetUser")
+	defer span.End()
+
 	var user User
-	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&user).Error; err != nil {
+	if err := r.db.WithContext(ctx).Scopes(filter.ToScope()).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return dto.User{}, fmt.Errorf("user not found: %w", svcerrs.ErrDataNotFound)
 		}

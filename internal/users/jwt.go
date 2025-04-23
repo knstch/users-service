@@ -13,7 +13,7 @@ import (
 	"users-service/internal/domain/enum"
 )
 
-func (svc *ServiceImpl) mintJWT(userID uint, role enum.Role) (string, string, error) {
+func (svc *ServiceImpl) mintJWT(userID uint, role enum.Role) (UserTokens, error) {
 	timeNow := time.Now()
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, auth.Claims{
 		UserID: strconv.Itoa(int(userID)),
@@ -26,16 +26,19 @@ func (svc *ServiceImpl) mintJWT(userID uint, role enum.Role) (string, string, er
 
 	signedAccessToken, err := accessToken.SignedString([]byte(svc.jwtSecret))
 	if err != nil {
-		return "", "", err
+		return UserTokens{}, err
 	}
 
 	rawRefreshToken := []byte(fmt.Sprintf("%s%d", signedAccessToken, time.Now().Unix()))
 	hash := sha3.New256()
 	_, err = hash.Write(rawRefreshToken)
 	if err != nil {
-		return "", "", err
+		return UserTokens{}, err
 	}
 	refreshToken := hex.EncodeToString(hash.Sum(nil))
 
-	return signedAccessToken, refreshToken, nil
+	return UserTokens{
+		AccessToken:  signedAccessToken,
+		RefreshToken: refreshToken,
+	}, nil
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
+	"github.com/knstch/subtrack-libs/tracing"
 	public "github.com/knstch/users-api/public"
 )
 
@@ -15,6 +16,9 @@ func MakeConfirmEmailEndpoint(c *Controller) endpoint.Endpoint {
 }
 
 func (c *Controller) ConfirmEmail(ctx context.Context, req *public.ConfirmEmailRequest) (*public.ConfirmEmailResponse, error) {
+	ctx, span := tracing.StartSpan(ctx, "public: ConfirmEmail")
+	defer span.End()
+
 	tokens, err := c.svc.ConfirmEmail(ctx, req.Code)
 	if err != nil {
 		return nil, fmt.Errorf("svc.ConfirmEmail: %w", err)

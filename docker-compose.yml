@@ -44,6 +44,32 @@ services:
     command: [ "redis-server", "--requirepass", "password" ]
     networks:
       - subtrack-net
+  app:
+    container_name: users-app
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/go-users/go.Dockerfile
+      args:
+        PORT: ${PUBLIC_HTTP_ADDR}
+    image: users-app:latest
+    environment:
+      - TZ=Asia/Novosibirsk
+    ports:
+      - ${PUBLIC_HTTP_ADDR}:${PUBLIC_HTTP_ADDR}
+    networks:
+      - subtrack-net
+  outbox:
+    container_name: outbox
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/go-outbox/go.Dockerfile
+    image: outbox-app:latest
+    environment:
+      - TZ=Asia/Novosibirsk
+    networks:
+      - subtrack-net
 volumes:
   pg_data:
     name: users-pg_data

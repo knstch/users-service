@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
+	"github.com/knstch/subtrack-libs/tracing"
 	public "github.com/knstch/users-api/public"
 )
 
@@ -15,6 +16,9 @@ func MakeRefreshTokenEndpoint(c *Controller) endpoint.Endpoint {
 }
 
 func (c *Controller) RefreshToken(ctx context.Context, req *public.RefreshTokenRequest) (*public.RefreshTokenResponse, error) {
+	ctx, span := tracing.StartSpan(ctx, "public: RefreshToken")
+	defer span.End()
+
 	tokens, err := c.svc.RefreshToken(ctx, req.RefreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("svc.RefreshToken: %w", err)

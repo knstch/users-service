@@ -6,10 +6,14 @@ import (
 	"fmt"
 
 	"github.com/knstch/subtrack-libs/svcerrs"
+	"github.com/knstch/subtrack-libs/tracing"
 	"gorm.io/gorm"
 )
 
 func (r *DBRepo) UseRefreshToken(ctx context.Context, token string) (uint, error) {
+	ctx, span := tracing.StartSpan(ctx, "repo: UseRefreshToken")
+	defer span.End()
+
 	var tokens Token
 	if err := r.db.Model(&Token{}).WithContext(ctx).Where("refresh_token = ? AND used = ?", token, false).First(&tokens).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

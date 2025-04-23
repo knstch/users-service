@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"net/mail"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/knstch/subtrack-kafka/topics"
+	"github.com/knstch/subtrack-libs/tracing"
 	"github.com/knstch/users-api/event"
 	"golang.org/x/crypto/bcrypt"
 
@@ -28,7 +30,10 @@ type UserTokens struct {
 	RefreshToken string
 }
 
-func (svc *ServiceImpl) CreateUser(ctx context.Context, email string, password string) (UserTokens, error) {
+func (svc *ServiceImpl) Register(ctx context.Context, email string, password string) (UserTokens, error) {
+	ctx, span := tracing.StartSpan(ctx, "service: Register")
+	defer span.End()
+
 	_, err := mail.ParseAddress(email)
 	if err != nil {
 		return UserTokens{}, fmt.Errorf("mail.ParseAddress: %w", svcerrs.ErrInvalidData)
@@ -51,10 +56,10 @@ func (svc *ServiceImpl) CreateUser(ctx context.Context, email string, password s
 	if err = svc.repo.Transaction(func(st repo.Repository) error {
 		userID, err = st.CreateUser(ctx, email, string(passwordWithSalt), enum.UnverifiedUserRole)
 		if err != nil {
-			return fmt.Errorf("repo.CreateUser: %w", err)
+			return fmt.Errorf("repo.Register: %w", err)
 		}
 
-		userTokens.AccessToken, userTokens.RefreshToken, err = svc.mintJWT(userID, enum.UnverifiedUserRole)
+		userTokens, err = svc.mintJWT(userID, enum.UnverifiedUserRole)
 		if err != nil {
 			return fmt.Errorf("svc.mintJWT: %w", err)
 		}
@@ -73,11 +78,16 @@ func (svc *ServiceImpl) CreateUser(ctx context.Context, email string, password s
 		return UserTokens{}, fmt.Errorf("redis.Set: %w", err)
 	}
 
-	if err = svc.producer.SendMessage(topics.TopicUserCreated, email, event.UserCreated{
+	eventToOutbox, err := json.Marshal(&event.UserCreated{
 		Email: email,
 		Code:  strconv.Itoa(confirmationCode),
-	}); err != nil {
-		return UserTokens{}, fmt.Errorf("producer.SendMessage: %w", err)
+	})
+	if err != nil {
+		return UserTokens{}, fmt.Errorf("json.Marshal: %w", err)
+	}
+
+	if err = svc.repo.AddToOutbox(ctx, topics.TopicUserCreated, confirmationKey(userID), eventToOutbox); err != nil {
+		return UserTokens{}, fmt.Errorf("repo.AddToOutbox: %w", err)
 	}
 
 	return userTokens, nil

@@ -3,17 +3,21 @@ package users.private;
 option go_package = "./";
 
 service Users {
-  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc ConfirmEmail(ConfirmEmailRequest) returns (ConfirmEmailResponse);
   rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+  rpc ConfirmResetPassword(ConfirmResetPasswordRequest) returns (ConfirmResetPasswordResponse);
 }
 
-message CreateUserRequest {
+message RegisterRequest {
   string email = 1;
   string password = 2;
 }
 
-message CreateUserResponse {
+message RegisterResponse {
   string accessToken = 1;
   string refreshToken = 2;
 }
@@ -35,3 +39,43 @@ message RefreshTokenResponse {
   string accessToken = 1;
   string refreshToken = 2;
 }
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+}
+
+message GetUserInfoRequest {}
+
+enum Role {
+  UNKNOWN = 0;
+  VERIFIED_USER = 1;
+  UNVERIFIED_USER = 2;
+  ADMIN = 3;
+  SUPER_ADMIN = 4;
+}
+
+message GetUserInfoResponse {
+  uint32 id = 1;
+  string email = 2;
+  Role role = 3;
+}
+
+message ResetPasswordRequest {
+  string email = 1;
+}
+
+message ResetPasswordResponse {}
+
+message ConfirmResetPasswordRequest {
+  string email = 1;
+  string code = 2;
+  string password = 3;
+}
+
+message ConfirmResetPasswordResponse {}

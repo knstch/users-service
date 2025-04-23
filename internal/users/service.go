@@ -8,6 +8,7 @@ import (
 	"github.com/go-redis/redis"
 
 	"users-service/config"
+	"users-service/internal/domain/dto"
 	"users-service/internal/users/repo"
 
 	"github.com/knstch/subtrack-kafka/producer"
@@ -26,9 +27,13 @@ type ServiceImpl struct {
 }
 
 type Users interface {
-	CreateUser(ctx context.Context, email string, password string) (UserTokens, error)
+	Register(ctx context.Context, email string, password string) (UserTokens, error)
 	ConfirmEmail(ctx context.Context, code string) (UserTokens, error)
 	RefreshToken(ctx context.Context, refreshToken string) (UserTokens, error)
+	Login(ctx context.Context, email string, password string) (UserTokens, error)
+	GetUserInfo(ctx context.Context, userID uint) (dto.User, error)
+	ResetPassword(ctx context.Context, email string) error
+	ConfirmResetPassword(ctx context.Context, email, code, password string) error
 }
 
 func NewService(lg *zap.Logger, repo repo.Repository, redis *redis.Client, cfg config.Config) *ServiceImpl {

@@ -4,10 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/knstch/subtrack-libs/tracing"
+
 	"users-service/internal/users/repo"
 )
 
 func (svc *ServiceImpl) RefreshToken(ctx context.Context, refreshToken string) (UserTokens, error) {
+	ctx, span := tracing.StartSpan(ctx, "service: RefreshToken")
+	defer span.End()
+
 	var userTokens UserTokens
 	err := svc.repo.Transaction(func(st repo.Repository) error {
 		userID, err := st.UseRefreshToken(ctx, refreshToken)
@@ -15,12 +20,14 @@ func (svc *ServiceImpl) RefreshToken(ctx context.Context, refreshToken string) (
 			return fmt.Errorf("st.UseRefreshToken: %w", err)
 		}
 
-		user, err := st.GetUser(ctx, userID)
+		user, err := st.GetUser(ctx, repo.UserFilter{
+			UserID: userID,
+		})
 		if err != nil {
 			return fmt.Errorf("st.GetUser: %w", err)
 		}
 
-		userTokens.AccessToken, userTokens.RefreshToken, err = svc.mintJWT(userID, user.Role)
+		userTokens, err = svc.mintJWT(userID, user.Role)
 		if err != nil {
 			return fmt.Errorf("svc.mintJWT: %w", err)
 		}
