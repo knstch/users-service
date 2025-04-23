@@ -3,3 +3,4 @@ migrate
 log/
 outbox
 ./users
+.env
