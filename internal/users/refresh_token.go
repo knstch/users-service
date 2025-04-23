@@ -4,10 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/knstch/subtrack-libs/tracing"
+
 	"users-service/internal/users/repo"
 )
 
 func (svc *ServiceImpl) RefreshToken(ctx context.Context, refreshToken string) (UserTokens, error) {
+	ctx, span := tracing.StartSpan(ctx, "service: RefreshToken")
+	defer span.End()
+
 	var userTokens UserTokens
 	err := svc.repo.Transaction(func(st repo.Repository) error {
 		userID, err := st.UseRefreshToken(ctx, refreshToken)

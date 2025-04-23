@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/knstch/subtrack-kafka/topics"
+	"github.com/knstch/subtrack-libs/tracing"
 	"github.com/knstch/users-api/event"
 	"golang.org/x/crypto/bcrypt"
 
@@ -30,6 +31,9 @@ type UserTokens struct {
 }
 
 func (svc *ServiceImpl) Register(ctx context.Context, email string, password string) (UserTokens, error) {
+	ctx, span := tracing.StartSpan(ctx, "service: Register")
+	defer span.End()
+
 	_, err := mail.ParseAddress(email)
 	if err != nil {
 		return UserTokens{}, fmt.Errorf("mail.ParseAddress: %w", svcerrs.ErrInvalidData)

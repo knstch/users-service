@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/knstch/subtrack-libs/endpoints"
+	"github.com/knstch/subtrack-libs/tracing"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gorm.io/driver/postgres"
@@ -50,6 +51,9 @@ func run() error {
 		return fmt.Errorf("config.GetConfig: %w", err)
 	}
 
+	shutdown := tracing.InitTracer(cfg.ServiceName, cfg.JaegerHost)
+	defer shutdown(context.Background())
+
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
@@ -84,7 +88,7 @@ func run() error {
 	svc := users.NewService(lg, dbRepo, redisClient, *cfg)
 
 	publicController := public.NewController(svc, lg, cfg)
-	publicEndpoints := endpoints.InitHttpEndpoints(publicController.Endpoints())
+	publicEndpoints := endpoints.InitHttpEndpoints(cfg.ServiceName, publicController.Endpoints())
 
 	srv := http.Server{
 		Addr: ":" + cfg.PublicHTTPAddr,

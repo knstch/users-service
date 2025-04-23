@@ -8,6 +8,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/knstch/subtrack-libs/auth"
 	"github.com/knstch/subtrack-libs/svcerrs"
+	"github.com/knstch/subtrack-libs/tracing"
 
 	"users-service/internal/domain/enum"
 	"users-service/internal/users/repo"
@@ -15,6 +16,9 @@ import (
 )
 
 func (svc *ServiceImpl) ConfirmEmail(ctx context.Context, code string) (UserTokens, error) {
+	ctx, span := tracing.StartSpan(ctx, "service: ConfirmEmail")
+	defer span.End()
+
 	if err := validator.ValidateConfirmationCode(code); err != nil {
 		return UserTokens{}, fmt.Errorf("validator.ValidateConfirmationCode: %w", err)
 	}

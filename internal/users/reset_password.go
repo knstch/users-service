@@ -13,6 +13,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/knstch/subtrack-kafka/topics"
 	"github.com/knstch/subtrack-libs/svcerrs"
+	"github.com/knstch/subtrack-libs/tracing"
 	"github.com/knstch/users-api/event"
 	"golang.org/x/crypto/bcrypt"
 
@@ -25,6 +26,9 @@ func resetPasswordKey(email string) string {
 }
 
 func (svc *ServiceImpl) ResetPassword(ctx context.Context, email string) error {
+	ctx, span := tracing.StartSpan(ctx, "service: ResetPassword")
+	defer span.End()
+
 	_, err := mail.ParseAddress(email)
 	if err != nil {
 		return fmt.Errorf("mail.ParseAddress: %w", svcerrs.ErrInvalidData)

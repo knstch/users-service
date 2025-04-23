@@ -7,9 +7,13 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/knstch/subtrack-libs/svcerrs"
+	"github.com/knstch/subtrack-libs/tracing"
 )
 
 func ValidatePassword(ctx context.Context, password string) error {
+	ctx, span := tracing.StartSpan(ctx, "validator: ValidatePassword")
+	defer span.End()
+
 	if err := validation.ValidateWithContext(ctx, password, validation.By(passwordValidator(password)), validation.Required); err != nil {
 		return err
 	}

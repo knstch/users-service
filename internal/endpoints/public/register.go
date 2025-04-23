@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kit/kit/endpoint"
+	"github.com/knstch/subtrack-libs/tracing"
 	public "github.com/knstch/users-api/public"
 )
 
@@ -14,6 +15,9 @@ func MakeRegisterEndpoint(c *Controller) endpoint.Endpoint {
 }
 
 func (c *Controller) Register(ctx context.Context, req *public.RegisterRequest) (*public.RegisterResponse, error) {
+	ctx, span := tracing.StartSpan(ctx, "public: Register")
+	defer span.End()
+
 	tokens, err := c.svc.Register(ctx, req.Email, req.Password)
 	if err != nil {
 		return nil, err

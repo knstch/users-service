@@ -6,12 +6,16 @@ import (
 	"net/mail"
 
 	"github.com/knstch/subtrack-libs/svcerrs"
+	"github.com/knstch/subtrack-libs/tracing"
 	"golang.org/x/crypto/bcrypt"
 
 	"users-service/internal/users/repo"
 )
 
 func (svc *ServiceImpl) Login(ctx context.Context, email string, password string) (UserTokens, error) {
+	ctx, span := tracing.StartSpan(ctx, "service: Login")
+	defer span.End()
+
 	_, err := mail.ParseAddress(email)
 	if err != nil {
 		return UserTokens{}, fmt.Errorf("mail.ParseAddress: %w", svcerrs.ErrInvalidData)

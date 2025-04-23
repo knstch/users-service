@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/knstch/subtrack-libs/svcerrs"
+	"github.com/knstch/subtrack-libs/tracing"
 	"gorm.io/gorm"
 
 	"users-service/internal/domain/dto"
@@ -13,6 +14,9 @@ import (
 )
 
 func (r *DBRepo) GetUser(ctx context.Context, filter UserFilter) (dto.User, error) {
+	ctx, span := tracing.StartSpan(ctx, "repo: GetUser")
+	defer span.End()
+
 	var user User
 	if err := r.db.WithContext(ctx).Scopes(filter.ToScope()).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

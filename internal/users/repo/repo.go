@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/knstch/subtrack-kafka/outbox"
 	"github.com/knstch/subtrack-kafka/topics"
+	"github.com/knstch/subtrack-libs/tracing"
 
 	"users-service/internal/domain/dto"
 	"users-service/internal/domain/enum"
@@ -81,6 +82,9 @@ func isUniqueViolation(err error) bool {
 }
 
 func (r *DBRepo) AddToOutbox(ctx context.Context, topic topics.KafkaTopic, key string, payload []byte) error {
+	ctx, span := tracing.StartSpan(ctx, "outbox: AddToOutbox")
+	defer span.End()
+
 	if err := r.db.WithContext(ctx).Model(&outbox.Outbox{}).Create(&outbox.Outbox{
 		Topic:   topic.String(),
 		Key:     key,

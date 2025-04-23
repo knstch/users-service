@@ -13,6 +13,7 @@ type Config struct {
 	JwtSecret      string `envconfig:"JWT_SECRET" required:"true"`
 	PasswordSecret string `envconfig:"PASSWORD_SECRET" required:"true"`
 
+	JaegerHost  string `envconfig:"JAEGER_HOST" required:"true"`
 	ServiceName string `envconfig:"SERVICE_NAME" required:"true"`
 
 	PublicHTTPAddr  string `envconfig:"PUBLIC_HTTP_ADDR" required:"true"`
