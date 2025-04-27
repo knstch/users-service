@@ -16,8 +16,7 @@ type Config struct {
 	JaegerHost  string `envconfig:"JAEGER_HOST" required:"true"`
 	ServiceName string `envconfig:"SERVICE_NAME" required:"true"`
 
-	PublicHTTPAddr  string `envconfig:"PUBLIC_HTTP_ADDR" required:"true"`
-	PrivateGRPCAddr string `envconfig:"PRIVATE_GRPC_ADDR" required:"true"`
+	PublicHTTPAddr string `envconfig:"PUBLIC_HTTP_ADDR" required:"true"`
 
 	KafkaAddr string `envconfig:"KAFKA_ADDR" required:"true"`
 

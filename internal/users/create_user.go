@@ -12,6 +12,7 @@ import (
 	"github.com/knstch/subtrack-kafka/topics"
 	"github.com/knstch/subtrack-libs/tracing"
 	"github.com/knstch/users-api/event"
+	walletsEvent "github.com/knstch/wallets-api/event"
 	"golang.org/x/crypto/bcrypt"
 
 	"users-service/internal/domain/enum"
@@ -23,6 +24,10 @@ import (
 
 func confirmationKey(userID uint) string {
 	return fmt.Sprintf("confirmation-%d", userID)
+}
+
+func walletKey(userID uint) string {
+	return fmt.Sprintf("wallet-%d", userID)
 }
 
 type UserTokens struct {
@@ -78,7 +83,7 @@ func (svc *ServiceImpl) Register(ctx context.Context, email string, password str
 		return UserTokens{}, fmt.Errorf("redis.Set: %w", err)
 	}
 
-	eventToOutbox, err := json.Marshal(&event.UserCreated{
+	eventSendMail, err := json.Marshal(&event.UserCreated{
 		Email: email,
 		Code:  strconv.Itoa(confirmationCode),
 	})
@@ -86,7 +91,18 @@ func (svc *ServiceImpl) Register(ctx context.Context, email string, password str
 		return UserTokens{}, fmt.Errorf("json.Marshal: %w", err)
 	}
 
-	if err = svc.repo.AddToOutbox(ctx, topics.TopicUserCreated, confirmationKey(userID), eventToOutbox); err != nil {
+	eventCreateWallet, err := json.Marshal(&walletsEvent.CreateWallet{
+		UserID: userID,
+	})
+	if err != nil {
+		return UserTokens{}, fmt.Errorf("json.Marshal: %w", err)
+	}
+
+	if err = svc.repo.AddToOutbox(ctx, topics.TopicUserCreated, confirmationKey(userID), eventSendMail); err != nil {
+		return UserTokens{}, fmt.Errorf("repo.AddToOutbox: %w", err)
+	}
+
+	if err = svc.repo.AddToOutbox(ctx, topics.TopicWalletsCreateWallet, walletKey(userID), eventCreateWallet); err != nil {
 		return UserTokens{}, fmt.Errorf("repo.AddToOutbox: %w", err)
 	}
 

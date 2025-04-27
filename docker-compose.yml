@@ -20,7 +20,7 @@ services:
       retries: 2
       start_period: 5s
     ports:
-      - ${PG_PORT:-5432}:5432
+      - ${PG_EXTERNAL_PORT:-5432}:5432
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
@@ -35,10 +35,10 @@ services:
         REDIS_PASSWORD: ${REDIS_PASSWORD}
     image: redis:latest
     ports:
-      - "6379:6379"
+      - ${REDIS_EXTERNAL_PORT:-6379}:6379
     environment:
-      REDIS_PASSWORD: password
-      REDIS_USERNAME: admin
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_USERNAME: ${REDIS_USERNAME}
     volumes:
       - redis_data:/data
     command: [ "redis-server", "--requirepass", "password" ]
@@ -77,4 +77,5 @@ volumes:
     name: users-redis_data
 networks:
   subtrack-net:
+    name: subtrack-net
     driver: bridge

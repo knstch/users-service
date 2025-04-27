@@ -37,7 +37,7 @@ type User struct {
 	Role      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt time.Time
+	DeletedAt *time.Time
 }
 
 func (User) TableName() string {
@@ -51,7 +51,7 @@ type UsersData struct {
 	LastName  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt time.Time
+	DeletedAt *time.Time
 }
 
 func (UsersData) TableName() string {

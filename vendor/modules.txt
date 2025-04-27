@@ -97,7 +97,7 @@ github.com/klauspost/compress/s2
 github.com/klauspost/compress/snappy
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
-# github.com/knstch/subtrack-kafka v0.0.8
+# github.com/knstch/subtrack-kafka v0.0.12
 ## explicit; go 1.24.1
 github.com/knstch/subtrack-kafka/outbox
 github.com/knstch/subtrack-kafka/producer
@@ -115,6 +115,9 @@ github.com/knstch/subtrack-libs/transport
 ## explicit; go 1.24.1
 github.com/knstch/users-api/event
 github.com/knstch/users-api/public
+# github.com/knstch/wallets-api v0.0.1
+## explicit; go 1.24.1
+github.com/knstch/wallets-api/event
 # github.com/mfridman/interpolate v0.0.2
 ## explicit; go 1.19
 github.com/mfridman/interpolate

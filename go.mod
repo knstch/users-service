@@ -10,9 +10,10 @@ require (
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/knstch/subtrack-kafka v0.0.8
+	github.com/knstch/subtrack-kafka v0.0.12
 	github.com/knstch/subtrack-libs v0.0.13
 	github.com/knstch/users-api v0.0.13
+	github.com/knstch/wallets-api v0.0.1
 	github.com/pressly/goose/v3 v3.24.2
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.36.0

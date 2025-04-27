@@ -15,4 +15,4 @@ COPY --from=builder /build/users /build/.env ./
 COPY --from=builder /build/users ./
 
 EXPOSE ${PUBLIC_HTTP_ADDR}
-CMD ["/app/${SERVICE_NAME}"]
+CMD ["/app/users"]
