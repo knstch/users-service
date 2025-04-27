@@ -2,11 +2,10 @@ package config
 
 import (
 	"fmt"
-	"path/filepath"
-	"strings"
-
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
+	"os"
+	"path/filepath"
 )
 
 type Config struct {
@@ -59,7 +58,7 @@ func GetConfig() (*Config, error) {
 
 func InitENV(dir string) error {
 	if err := godotenv.Load(filepath.Join(dir, ".env.local")); err != nil {
-		if !strings.Contains(err.Error(), "no such file or directory") {
+		if !os.IsNotExist(err) {
 			return fmt.Errorf("godotenv.Load: %w", err)
 		}
 	}
