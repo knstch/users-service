@@ -11,7 +11,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/knstch/subtrack-kafka v0.1.0
-	github.com/knstch/subtrack-libs v0.0.17
+	github.com/knstch/subtrack-libs v0.1.2
 	github.com/knstch/users-api v0.0.13
 	github.com/knstch/wallets-api v0.0.4
 	github.com/pressly/goose/v3 v3.24.2

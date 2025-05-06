@@ -72,8 +72,8 @@ github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zt
 github.com/klauspost/compress v1.18.0/go.mod h1:2Pp+KzxcywXVXMr50+X0Q/Lsb43OQHYWRCY2AiWywWQ=
 github.com/knstch/subtrack-kafka v0.1.0 h1:SABAjPS3B4P+9qkUi7mXacwhgMbEQT+cM6UL9jCGFiE=
 github.com/knstch/subtrack-kafka v0.1.0/go.mod h1:AqUN5Urq43yHuVGDmfKR+r2ajUs9I2h8f7vNR3K/nn4=
-github.com/knstch/subtrack-libs v0.0.17 h1:HoKkB7hD4acwV3iRKtrjlQIR7C+a9miwABmtVLj0NTE=
-github.com/knstch/subtrack-libs v0.0.17/go.mod h1:1C9Rpni0c17wZfP5oP3mxKwywMVywtQr/zqBjMh4GLc=
+github.com/knstch/subtrack-libs v0.1.2 h1:09GM1TolOndojB/FR5cGuLaM8AY/6IV8nwYecwxnHuM=
+github.com/knstch/subtrack-libs v0.1.2/go.mod h1:1C9Rpni0c17wZfP5oP3mxKwywMVywtQr/zqBjMh4GLc=
 github.com/knstch/users-api v0.0.13 h1:h7cQin8oyi3uFaZkArsZZgzHGT4XVCzdj1qQT/vmZw0=
 github.com/knstch/users-api v0.0.13/go.mod h1:TpqiRgqNu+XQsU/9Q/zwwVtRoOkwaCOXDabJzwF1a5M=
 github.com/knstch/wallets-api v0.0.4 h1:O+v1gUj2RZKAyYOt2VlQ22P7lbuga+pUSs68zYWPYgE=

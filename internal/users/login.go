@@ -42,6 +42,10 @@ func (svc *ServiceImpl) Login(ctx context.Context, email string, password string
 		return UserTokens{}, fmt.Errorf("svc.mintJWT: %w", err)
 	}
 
+	if err = svc.repo.StoreTokens(ctx, user.UserID, tokens.AccessToken, tokens.RefreshToken); err != nil {
+		return UserTokens{}, fmt.Errorf("repo.StoreTokens: %w", err)
+	}
+
 	return tokens, nil
 }
 
