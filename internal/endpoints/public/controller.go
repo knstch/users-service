@@ -1,13 +1,12 @@
 package public
 
 import (
+	"github.com/knstch/subtrack-libs/log"
 	"net/http"
 
 	"github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/knstch/subtrack-libs/middleware"
-	"go.uber.org/zap"
-
 	"users-service/config"
 	"users-service/internal/users"
 
@@ -23,13 +22,13 @@ type Endpoints struct {
 
 type Controller struct {
 	svc users.Users
-	lg  *zap.Logger
+	lg  *log.Logger
 	cfg *config.Config
 
 	public.UnimplementedUsersServer
 }
 
-func NewController(svc users.Users, lg *zap.Logger, cfg *config.Config) *Controller {
+func NewController(svc users.Users, lg *log.Logger, cfg *config.Config) *Controller {
 	return &Controller{
 		svc: svc,
 		cfg: cfg,

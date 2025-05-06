@@ -2,13 +2,13 @@ package repo
 
 import (
 	"fmt"
+	"github.com/knstch/subtrack-libs/log"
 
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type DBRepo struct {
-	lg *zap.Logger
+	lg *log.Logger
 	db *gorm.DB
 }
 
@@ -36,7 +36,7 @@ func (r *DBRepo) Transaction(fn func(st Repository) error) error {
 	return nil
 }
 
-func NewDBRepo(lg *zap.Logger, db *gorm.DB) *DBRepo {
+func NewDBRepo(lg *log.Logger, db *gorm.DB) *DBRepo {
 	return &DBRepo{
 		lg: lg,
 		db: db,

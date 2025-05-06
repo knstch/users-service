@@ -2,21 +2,19 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"github.com/knstch/subtrack-libs/log"
+	defaultLog "log"
 	"os"
 	"path/filepath"
 
 	"github.com/knstch/subtrack-kafka/outbox"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
 
 	"users-service/config"
 )
 
 func main() {
 	if err := run(); err != nil {
-		log.Println(err)
+		defaultLog.Println(err)
 	}
 }
 
@@ -37,26 +35,9 @@ func run() error {
 		return fmt.Errorf("config.GetConfig: %w", err)
 	}
 
-	encoderConfig := zap.NewProductionEncoderConfig()
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	core := zapcore.NewTee(
-		zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(&lumberjack.Logger{
-			Filename:   `./log/` + cfg.ServiceName + `_outbox_logfile.log`,
-			MaxSize:    100,
-			MaxBackups: 3,
-			MaxAge:     28,
-		}), zap.InfoLevel),
-		zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(&lumberjack.Logger{
-			Filename:   `./log/` + cfg.ServiceName + `_outbox_error.log`,
-			MaxSize:    100,
-			MaxBackups: 3,
-			MaxAge:     28,
-		}), zap.ErrorLevel),
-	)
-	lg := zap.New(core)
+	logger := log.NewLogger(cfg.ServiceName, log.InfoLevel)
 
-	listener, err := outbox.NewOutboxListener(cfg.KafkaAddr, cfg.GetDSN(), lg)
+	listener, err := outbox.NewOutboxListener(cfg.KafkaAddr, cfg.GetDSN(), logger)
 	if err != nil {
 		return fmt.Errorf("outbox.NewOutboxListener: %w", err)
 	}

@@ -2,8 +2,7 @@ package users
 
 import (
 	"context"
-
-	"go.uber.org/zap"
+	"github.com/knstch/subtrack-libs/log"
 
 	"github.com/go-redis/redis"
 
@@ -15,7 +14,7 @@ import (
 )
 
 type ServiceImpl struct {
-	lg *zap.Logger
+	lg *log.Logger
 
 	repo repo.Repository
 
@@ -36,7 +35,7 @@ type Users interface {
 	ConfirmResetPassword(ctx context.Context, email, code, password string) error
 }
 
-func NewService(lg *zap.Logger, repo repo.Repository, redis *redis.Client, cfg config.Config) *ServiceImpl {
+func NewService(lg *log.Logger, repo repo.Repository, redis *redis.Client, cfg config.Config) *ServiceImpl {
 	return &ServiceImpl{
 		lg:             lg,
 		repo:           repo,

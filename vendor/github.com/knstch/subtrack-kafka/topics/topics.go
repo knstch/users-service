@@ -5,11 +5,15 @@ package topics
 const (
 	TopicUserCreated KafkaTopic = "user.created"
 	TopicUserResetPassword KafkaTopic = "user.resetPassword"
-	TopicWalletsCreateWallet KafkaTopic = "wallets.CreateWallet"
+	TopicWalletsCreateWallet KafkaTopic = "wallets.createWallet"
+	TopicWatcherOperateLeaderWallet KafkaTopic = "watcher.operateLeaderWallet"
+	TopicBlockchainDexSwap KafkaTopic = "blockchain.dex.swap"
 )
 
 var TopicDescriptions = map[KafkaTopic]string{
 	TopicUserCreated: "New user created",
 	TopicUserResetPassword: "Reset password",
 	TopicWalletsCreateWallet: "Create wallet for new user",
+	TopicWatcherOperateLeaderWallet: "Add or remove wallet from watch list",
+	TopicBlockchainDexSwap: "Swap event",
 }

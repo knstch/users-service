@@ -10,14 +10,13 @@ require (
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/knstch/subtrack-kafka v0.0.12
-	github.com/knstch/subtrack-libs v0.0.13
+	github.com/knstch/subtrack-kafka v0.1.0
+	github.com/knstch/subtrack-libs v0.0.17
 	github.com/knstch/users-api v0.0.13
-	github.com/knstch/wallets-api v0.0.1
+	github.com/knstch/wallets-api v0.0.4
 	github.com/pressly/goose/v3 v3.24.2
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.36.0
-	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/gorm v1.25.12
 )
@@ -63,4 +62,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463 // indirect
 	google.golang.org/grpc v1.71.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 )

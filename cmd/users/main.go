@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
+	defaultLog "log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,9 +13,8 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/knstch/subtrack-libs/endpoints"
+	"github.com/knstch/subtrack-libs/log"
 	"github.com/knstch/subtrack-libs/tracing"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
@@ -23,13 +22,11 @@ import (
 	"users-service/internal/endpoints/public"
 	"users-service/internal/users"
 	"users-service/internal/users/repo"
-
-	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
 	if err := run(); err != nil {
-		log.Println(err)
+		defaultLog.Println(err)
 		recover()
 	}
 }
@@ -54,24 +51,7 @@ func run() error {
 	shutdown := tracing.InitTracer(cfg.ServiceName, cfg.JaegerHost)
 	defer shutdown(context.Background())
 
-	encoderConfig := zap.NewProductionEncoderConfig()
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	core := zapcore.NewTee(
-		zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(&lumberjack.Logger{
-			Filename:   `./log/` + cfg.ServiceName + `_logfile.log`,
-			MaxSize:    100,
-			MaxBackups: 3,
-			MaxAge:     28,
-		}), zap.InfoLevel),
-		zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(&lumberjack.Logger{
-			Filename:   `./log/` + cfg.ServiceName + `_error.log`,
-			MaxSize:    100,
-			MaxBackups: 3,
-			MaxAge:     28,
-		}), zap.ErrorLevel),
-	)
-	lg := zap.New(core)
+	logger := log.NewLogger(cfg.ServiceName, log.InfoLevel)
 
 	dsnRedis, err := redis.ParseURL(cfg.GetRedisDSN())
 	if err != nil {
@@ -83,11 +63,11 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("gorm.Open: %w", err)
 	}
-	dbRepo := repo.NewDBRepo(lg, db)
+	dbRepo := repo.NewDBRepo(logger, db)
 
-	svc := users.NewService(lg, dbRepo, redisClient, *cfg)
+	svc := users.NewService(logger, dbRepo, redisClient, *cfg)
 
-	publicController := public.NewController(svc, lg, cfg)
+	publicController := public.NewController(svc, logger, cfg)
 	publicEndpoints := endpoints.InitHttpEndpoints(cfg.ServiceName, publicController.Endpoints())
 
 	srv := http.Server{
@@ -108,13 +88,13 @@ func run() error {
 		<-sigint
 
 		if err = srv.Shutdown(context.Background()); err != nil {
-			log.Print(err)
+			logger.Error("error shutting down", err)
 		}
 		close(idleConnsClosed)
 	}()
 
 	if err = srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-		log.Print(err)
+		logger.Error("error serving", err)
 	}
 
 	<-idleConnsClosed
